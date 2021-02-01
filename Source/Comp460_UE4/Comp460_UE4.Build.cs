@@ -12,6 +12,11 @@ public class Comp460_UE4 : ModuleRules
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
+		// Should speed up compile time
+		// PrivatePCHHeaderFile = "MaulProtoPrecompiled.h";
+		MinFilesUsingPrecompiledHeaderOverride = 1;
+		bUseUnity = false;
+
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
 		
