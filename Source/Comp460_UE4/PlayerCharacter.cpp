@@ -26,7 +26,7 @@ void APlayerCharacter::BeginPlay()
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Using PlayerCharacter."));
 
 	if (RootComponent != nullptr) {
-		// Camera = GetOwner()->FindComponentByClass<UCameraComponent>();
+		Camera = GetOwner()->FindComponentByClass<UCameraComponent>();
 		// Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 		// Camera->AttachTo(RootComponent);
 	}
