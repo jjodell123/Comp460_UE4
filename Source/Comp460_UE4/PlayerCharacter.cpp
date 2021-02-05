@@ -59,7 +59,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 void APlayerCharacter::MoveForward(float Val)
 {
 	FVector Direction = GetActorForwardVector();//FRotationMatrix(Controller->GetActorForwardVector()).GetScaledAxis(EAxis::X);
-    AddMovementInput(Direction, Val);
+    UE_LOG(LogTemp, Warning, TEXT("Forward is %d %d %d"), Direction.X, Direction.Y, Direction.Z);
+
+	AddMovementInput(Direction, Val);
 }
 
 // Player moves left or right
@@ -73,7 +75,7 @@ void APlayerCharacter::Strafe(float Val)
 void APlayerCharacter::Spin(float Val)
 {
 	// if (Val)
-		UE_LOG(LogTemp, Warning, TEXT("val is %d"), Val);
+		// UE_LOG(LogTemp, Warning, TEXT("val is %d"), Val);
 
 	if (Val)
 		AddActorLocalRotation(FRotator(0, 0, Val));
@@ -81,7 +83,7 @@ void APlayerCharacter::Spin(float Val)
 
 void APlayerCharacter::HorizontalRotation(float Val)
 {
-	UE_LOG(LogTemp, Warning, TEXT("left is %d"), Val);
+	// UE_LOG(LogTemp, Warning, TEXT("left is %d"), Val);
 
 	if (Val)
 		AddActorLocalRotation(FRotator(0, Val, 0));
@@ -91,7 +93,7 @@ void APlayerCharacter::HorizontalRotation(float Val)
 
 void APlayerCharacter::VerticalRotation(float Val)
 {
-		UE_LOG(LogTemp, Warning, TEXT("right is is %d"), Val);
+		// UE_LOG(LogTemp, Warning, TEXT("right is is %d"), Val);
 
 	if (Val)
 		AddActorLocalRotation(FRotator(Val, 0, 0));
