@@ -13,5 +13,8 @@ UCLASS()
 class COMP460_UE4_API AComp460_UE4GameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
+
+	public:
+	AComp460_UE4GameModeBase();
 	
 };
