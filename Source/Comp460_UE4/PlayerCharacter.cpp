@@ -50,7 +50,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAxis("MoveForward", this, &APlayerCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("Strafe", this, &APlayerCharacter::Strafe);
 	PlayerInputComponent->BindAxis("Spin", this, &APlayerCharacter::Spin);
-	PlayerInputComponent->BindAxis("Turn", this, &APlayerCharacter::AddControllerYawInput);
+	PlayerInputComponent->BindAxis("Turn", this, &APlayerCharacter::HorizontalRotation);
 	PlayerInputComponent->BindAxis("LookUp", this, &APlayerCharacter::VerticalRotation);
 }
 
@@ -83,7 +83,7 @@ void APlayerCharacter::Spin(float Val)
 
 void APlayerCharacter::HorizontalRotation(float Val)
 {
-	// UE_LOG(LogTemp, Warning, TEXT("left is %d"), Val);
+	UE_LOG(LogTemp, Warning, TEXT("left is %d"), Val);
 
 	if (Val)
 		AddActorLocalRotation(FRotator(0, Val, 0));
