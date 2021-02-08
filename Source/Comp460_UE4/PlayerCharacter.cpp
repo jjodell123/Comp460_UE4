@@ -10,9 +10,9 @@ APlayerCharacter::APlayerCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Disables in built controller rotation
-	bUseControllerRotationYaw = false;
-	bUseControllerRotationPitch = false;
-	bUseControllerRotationRoll = false;
+	bUseControllerRotationYaw = true;
+	bUseControllerRotationPitch = true;
+	bUseControllerRotationRoll = true;
 
 }
 
@@ -56,6 +56,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	// PlayerInputComponent->BindAxis("LookUp", this, &APlayerCharacter::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("Turn", this, &APlayerCharacter::AddControllerYawInput);
     PlayerInputComponent->BindAxis("LookUp", this, &APlayerCharacter::AddControllerPitchInput);
+	PlayerInputComponent->BindAxis("Ascend", this, &APlayerCharacter::Ascend);
 }
 
 // Player moves forwards or backwards
@@ -65,7 +66,7 @@ void APlayerCharacter::MoveForward(float Val)
 	FVector Direction = GetActorForwardVector();//FRotationMatrix(Controller->GetActorForwardVector()).GetScaledAxis(EAxis::X);
     UE_LOG(LogTemp, Warning, TEXT("Forward is %d %d %d"), Direction.X, Direction.Y, Direction.Z);
 //
-	AddMovementInput(Direction, Val, true);
+	AddMovementInput(Direction, Val);
 }
 
 // Player moves left or right
@@ -83,6 +84,13 @@ void APlayerCharacter::Strafe(float Val)
 
 	// add movement in that direction
 	AddMovementInput(Direction, Val);
+}
+
+void APlayerCharacter::Ascend(float Val)
+{
+	FVector Direction = GetActorUpVector();
+	AddMovementInput(Direction, Val);
+
 }
 
 // Player spins left or right
@@ -113,4 +121,6 @@ void APlayerCharacter::VerticalRotation(float Val)
 	AddControllerPitchInput(Val);
 		// AddActorLocalRotation(FQuat(FRotator(Val, 0, 0)));
 }
+
+
 

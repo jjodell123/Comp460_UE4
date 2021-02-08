@@ -36,6 +36,9 @@ private:
 	void Strafe(float Val);
 
 	UFUNCTION()
+	void Ascend(float Val);
+
+	UFUNCTION()
 	void Spin(float Val);
 
 	UFUNCTION()
