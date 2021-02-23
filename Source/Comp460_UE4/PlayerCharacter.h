@@ -7,6 +7,8 @@
 #include "Camera/CameraComponent.h"
 #include "PlayerCharacter.generated.h"
 
+class UCameraComponent;
+
 UCLASS()
 class COMP460_UE4_API APlayerCharacter : public ACharacter
 {
