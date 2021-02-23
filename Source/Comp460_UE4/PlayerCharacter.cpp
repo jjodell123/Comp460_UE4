@@ -12,7 +12,7 @@ APlayerCharacter::APlayerCharacter()
 	// Disables in built controller rotation
 	bUseControllerRotationYaw = true;
 	bUseControllerRotationPitch = true;
-	bUseControllerRotationRoll = true;
+	bUseControllerRotationRoll = false;
 
 }
 
@@ -64,7 +64,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 void APlayerCharacter::MoveForward(float Val)
 {
 	FVector Direction = GetActorForwardVector();//FRotationMatrix(Controller->GetActorForwardVector()).GetScaledAxis(EAxis::X);
-    UE_LOG(LogTemp, Warning, TEXT("Forward is %d %d %d"), Direction.X, Direction.Y, Direction.Z);
+    // UE_LOG(LogTemp, Warning, TEXT("Forward is %d %d %d"), Direction.X, Direction.Y, Direction.Z);
 //
 	AddMovementInput(Direction, Val);
 }
@@ -79,7 +79,7 @@ void APlayerCharacter::Strafe(float Val)
 
 	// Get right vector
 	const FVector Direction = FRotationMatrix(Rotation).GetUnitAxis(EAxis::Y);
-	    UE_LOG(LogTemp, Warning, TEXT("Right is %d %d %d"), Direction.X, Direction.Y, Direction.Z);
+	    // UE_LOG(LogTemp, Warning, TEXT("Right is %d %d %d"), Direction.X, Direction.Y, Direction.Z);
 
 
 	// add movement in that direction
@@ -105,7 +105,7 @@ void APlayerCharacter::Spin(float Val)
 
 void APlayerCharacter::HorizontalRotation(float Val)
 {
-	UE_LOG(LogTemp, Warning, TEXT("left is %d"), Val);
+	// UE_LOG(LogTemp, Warning, TEXT("left is %d"), Val);
 
 		AddControllerYawInput(Val);
 		// AddActorLocalRotation(FQuat(FRotator(0, Val, 0)));
@@ -115,7 +115,7 @@ void APlayerCharacter::HorizontalRotation(float Val)
 
 void APlayerCharacter::VerticalRotation(float Val)
 {
-	UE_LOG(LogTemp, Warning, TEXT("right is is %d"), Val);
+	// UE_LOG(LogTemp, Warning, TEXT("right is is %d"), Val);
 
 	// if (Val)
 	AddControllerPitchInput(Val);
