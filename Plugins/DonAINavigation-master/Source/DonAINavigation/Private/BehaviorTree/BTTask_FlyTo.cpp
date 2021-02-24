@@ -81,7 +81,7 @@ EBTNodeResult::Type UBTTask_FlyTo::SchedulePathfindingRequest(UBehaviorTreeCompo
 	auto myMemory    =  (FBT_FlyToTarget*)NodeMemory;
 	auto blackboard  =  pawn ? pawn->GetController()->FindComponentByClass<UBlackboardComponent>() : NULL;
 
-	UE_LOG(DoNNavigationLog, Log, TEXT("The name is %s"), *(pawn->GetName()));
+	// UE_LOG(DoNNavigationLog, Log, TEXT("The name is %s"), *(pawn->GetName()));
 
 
 	/*const float currentTime = GetWorld()->GetRealTimeSeconds();
@@ -93,7 +93,11 @@ EBTNodeResult::Type UBTTask_FlyTo::SchedulePathfindingRequest(UBehaviorTreeCompo
 		*/
 	NavigationManager =  UDonNavigationHelper::DonNavigationManagerForActor(pawn);
 
-	UE_LOG(DoNNavigationLog, Log, TEXT("Pointer val is %p"), (void *)NavigationManager);
+	if (NavigationManager->HasTask(pawn) && !QueryParams.bForceRescheduleQuery)
+		return EBTNodeResult::Failed; // early exit instead of going through the manager's internal checks and fallback via HandleTaskFailure (which isn't appropriate here)
+	
+
+	// UE_LOG(DoNNavigationLog, Log, TEXT("Pointer val is %p"), (void *)NavigationManager);
 
 	// Validate internal state:
 	if (!pawn || !myMemory || !blackboard || !NavigationManager)
@@ -105,9 +109,7 @@ EBTNodeResult::Type UBTTask_FlyTo::SchedulePathfindingRequest(UBehaviorTreeCompo
 
 
 
-	if (NavigationManager->HasTask(pawn) && !QueryParams.bForceRescheduleQuery)
-		return EBTNodeResult::Failed; // early exit instead of going through the manager's internal checks and fallback via HandleTaskFailure (which isn't appropriate here)
-	
+
 	
 	// Validate blackboard key data:
 	if(FlightLocationKey.SelectedKeyType != UBlackboardKeyType_Vector::StaticClass())

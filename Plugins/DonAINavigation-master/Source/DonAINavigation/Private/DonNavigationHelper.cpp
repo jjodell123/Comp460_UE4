@@ -31,7 +31,7 @@ ADonNavigationManager* UDonNavigationHelper::DonNavigationManager(UObject* World
 
 ADonNavigationManager* UDonNavigationHelper::DonNavigationManagerForActor(const AActor *Actor)
 {
-	UE_LOG(DoNNavigationLog, Log, TEXT("Other pointer val is %p with location %s"), (void *)Actor, *(Actor->GetActorLocation().ToString()));
+	// UE_LOG(DoNNavigationLog, Log, TEXT("Other pointer val is %p with location %s"), (void *)Actor, *(Actor->GetActorLocation().ToString()));
 
 
 	if (!Actor)
@@ -40,12 +40,12 @@ ADonNavigationManager* UDonNavigationHelper::DonNavigationManagerForActor(const 
 	TActorIterator<ADonNavigationManager> It(Actor->GetWorld(), ADonNavigationManager::StaticClass());
 
 
-	UE_LOG(DoNNavigationLog, Log, TEXT("%s"), *(Actor->GetWorld()->GetMapName()));
-	UE_LOG(DoNNavigationLog, Log, TEXT("%p %s"), &It, It ? *FString("true") : *FString("false"));
+	// UE_LOG(DoNNavigationLog, Log, TEXT("%s"), *(Actor->GetWorld()->GetMapName()));
+	// UE_LOG(DoNNavigationLog, Log, TEXT("%p %s"), &It, It ? *FString("true") : *FString("false"));
 
 	for (; It; ++It) {
 		const ADonNavigationManager *Mgr = *It;
-		UE_LOG(DoNNavigationLog, Log, TEXT("MGR pointer val is %p and it is within world is %B"), (void *)Mgr, Mgr->IsLocationWithinNavigableWorld(Actor->GetActorLocation()));
+		// UE_LOG(DoNNavigationLog, Log, TEXT("MGR pointer val is %p and it is within world is %d"), (void *)Mgr, Mgr->IsLocationWithinNavigableWorld(Actor->GetActorLocation()));
 		if (Mgr->IsLocationWithinNavigableWorld(Actor->GetActorLocation()))
 			return *It;
 	}
