@@ -9,6 +9,8 @@ public class Comp460_UE4Target : TargetRules
 	{
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
+		// bUseUnity = false;
+		// bUsePCHFiles = false;
 		ExtraModuleNames.AddRange( new string[] { "Comp460_UE4" } );
 	}
 }
