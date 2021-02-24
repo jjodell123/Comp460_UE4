@@ -8,6 +8,8 @@ public class Comp460_UE4EditorTarget : TargetRules
 	public Comp460_UE4EditorTarget( TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Editor;
+		// bUseUnity = false;
+		// bUsePCHFiles = false;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
 		ExtraModuleNames.AddRange( new string[] { "Comp460_UE4" } );
 	}

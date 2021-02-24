@@ -7,6 +7,8 @@
 #include "Camera/CameraComponent.h"
 #include "PlayerCharacter.generated.h"
 
+class UCameraComponent;
+
 UCLASS()
 class COMP460_UE4_API APlayerCharacter : public ACharacter
 {
@@ -34,6 +36,9 @@ private:
 
 	UFUNCTION()
 	void Strafe(float Val);
+
+	UFUNCTION()
+	void Ascend(float Val);
 
 	UFUNCTION()
 	void Spin(float Val);
