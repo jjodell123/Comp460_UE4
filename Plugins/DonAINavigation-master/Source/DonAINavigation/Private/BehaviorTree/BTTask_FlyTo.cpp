@@ -129,6 +129,9 @@ EBTNodeResult::Type UBTTask_FlyTo::SchedulePathfindingRequest(UBehaviorTreeCompo
 	FVector flightDestination = blackboard->GetValueAsVector(FlightLocationKey.SelectedKeyName);
 	myMemory->TargetLocation = flightDestination;
 
+	UE_LOG(DoNNavigationLog, Warning, TEXT("Destination %s is here"), *flightDestination.ToString());
+
+
 	// Bind result notification delegate:
 	FDoNNavigationResultHandler resultHandler;
 	resultHandler.BindDynamic(this, &UBTTask_FlyTo::Pathfinding_OnFinish);
@@ -328,7 +331,7 @@ void UBTTask_FlyTo::TickPathNavigation(UBehaviorTreeComponent& OwnerComp, FBT_Fl
 	if (MyMemory->bIsANavigator)
 	{
 		// Customized movement handling for advanced users:
-		IDonNavigator::Execute_AddMovementInputCustom(pawn, flightDirection, 1.f);
+		IDonNavigator::Execute_AddMovementInputCustom(pawn, flightDirection, DeltaSeconds);
 	}
 	else
 	{

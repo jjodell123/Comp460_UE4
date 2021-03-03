@@ -1,9 +1,12 @@
 {
-	"configurations": [
-		{
-			"name": "Comp460_UE4Editor Editor Win64 Development (Comp460_UE4)",
-			"intelliSenseMode": "msvc-x64",
-			"compileCommands": "D:\\Users\\jjode\\Documents\\Unreal Projects\\Comp460_UE4\\.vscode\\compileCommands_Comp460_UE4.json"
-		}
-	]
+    "configurations": [
+        {
+            "name": "Comp460_UE4Editor Editor Win64 Development (Comp460_UE4)",
+            "intelliSenseMode": "msvc-x64",
+            "compileCommands": "D:\\Users\\jjode\\Documents\\Unreal Projects\\Comp460_UE4\\.vscode\\compileCommands_Comp460_UE4.json",
+            "cStandard": "c17",
+            "cppStandard": "c++17"
+        }
+    ],
+    "version": 4
 }
