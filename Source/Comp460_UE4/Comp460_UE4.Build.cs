@@ -12,7 +12,7 @@ public class Comp460_UE4 : ModuleRules
 		bEnforceIWYU = true;
 		// PrivatePCHHeaderFile = "MaulProtoPrecompiled.h";
 		MinFilesUsingPrecompiledHeaderOverride = 1;
-		bUseUnity = false;
+		bUseUnity = true;
 	
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
 
