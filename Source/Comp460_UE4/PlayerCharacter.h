@@ -49,11 +49,27 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
     UAnimMontage* FireAnimation;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PlayerStatus)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PlayerSettings)
     bool isDead = false;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PlayerStatus)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PlayerSettings)
     int Damage = 25;
+
+    // Movement speeds
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PlayerSettings)
+    float MouseSensitivity = 50.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PlayerSettings)
+    float AscendSpeed = 10.0f;
+    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PlayerSettings)
+    float StrafeSpeed = 10.0f;
+    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PlayerSettings)
+    float ForwardSpeed = 10.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PlayerSettings)
+    float SpinSpeed = 10.0f;
 
 
     //Function handling firing projectiles

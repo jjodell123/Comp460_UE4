@@ -89,7 +89,7 @@ void APlayerCharacter::OnFire()
         // GetActorEyesViewPoint(CameraLocation, CameraRotation);
 
         // Move the start location to in front of the head
-        FVector MuzzleLocation = CameraLocation + ForwardVector * 14;
+        FVector MuzzleLocation = CameraLocation + ForwardVector * 80;
         FRotator MuzzleRotation = CameraRotation;
 
         UWorld* World = GetWorld();
@@ -153,8 +153,10 @@ void APlayerCharacter::Multi_OnFire_Implementation(FVector Location, FRotator Ro
 void APlayerCharacter::MoveForward(float Val)
 {
     if (!isDead) {
-
         FVector Direction = GetActorForwardVector();
+        FVector Position = GetActorLocation();
+
+        //SetActorLocation(Position + Direction * Val * ForwardSpeed, true);
         AddMovementInput(Direction, Val);
 
         if (!HasAuthority())
@@ -190,7 +192,11 @@ void APlayerCharacter::Multi_MoveForward_Implementation(float Val)
 {
     if (!IsLocallyControlled()) {
         FVector Direction = GetActorForwardVector();
+        FVector Position = GetActorLocation();
+
         AddMovementInput(Direction, Val);
+        //SetActorLocation(Position + Direction * Val * ForwardSpeed, true);
+        // * Val * ForwardSpeed * GetWorld()->GetDeltaSeconds()
     }
 }
 
@@ -200,7 +206,10 @@ void APlayerCharacter::Strafe(float Val)
     if (!isDead) {
         // Get right vector
         const FVector Direction = GetActorRightVector();
+        FVector Position = GetActorLocation();
+
         AddMovementInput(Direction, Val);
+        //SetActorLocation(Position + Direction * Val * StrafeSpeed, true);
 
         if (!HasAuthority())
         {
@@ -235,15 +244,22 @@ void APlayerCharacter::Multi_Strafe_Implementation(float Val)
 {
     if (!IsLocallyControlled()) {
         const FVector Direction = GetActorRightVector();
+        FVector Position = GetActorLocation();
+        
         AddMovementInput(Direction, Val);
+        //SetActorLocation(Position + Direction * Val * StrafeSpeed, true);
+        // * Val * StrafeSpeed * GetWorld()->GetDeltaSeconds()
     }
 }
 
 void APlayerCharacter::Ascend(float Val)
 {
     if (!isDead) {
+        FVector Position = GetActorLocation();
         FVector Direction = GetActorUpVector();
+
         AddMovementInput(Direction, Val);
+        //SetActorLocation(Position + Direction * Val * AscendSpeed, true);
 
         if (!HasAuthority())
         {
@@ -277,8 +293,12 @@ bool APlayerCharacter::Multi_Ascend_Validate(float Val)
 void APlayerCharacter::Multi_Ascend_Implementation(float Val)
 {
     if (!IsLocallyControlled()) {
+        FVector Position = GetActorLocation();
         FVector Direction = GetActorUpVector();
+
         AddMovementInput(Direction, Val);
+        //SetActorLocation(Position + Direction * Val * AscendSpeed, true);
+        //*Val* AscendSpeed* GetWorld()->GetDeltaSeconds()
     }
 }
 
@@ -286,10 +306,8 @@ void APlayerCharacter::Multi_Ascend_Implementation(float Val)
 void APlayerCharacter::Spin(float Val)
 {
     if (!isDead) {
-        //TODO: check if I can remove one of these
-        AddControllerRollInput(Val);
-        if (Val)
-            AddActorLocalRotation(FQuat(FRotator(0, 0, Val)));
+        AddActorLocalRotation(FQuat(FRotator(0, 0, Val)));
+        // * SpinSpeed * GetWorld()->GetDeltaSeconds()
 
         if (!HasAuthority())
         {
@@ -323,9 +341,8 @@ bool APlayerCharacter::Multi_Spin_Validate(float Val)
 void APlayerCharacter::Multi_Spin_Implementation(float Val)
 {
     if (!IsLocallyControlled()) {
-        AddControllerRollInput(Val);
-        if (Val)
-            AddActorLocalRotation(FQuat(FRotator(0, 0, Val)));
+        AddActorLocalRotation(FQuat(FRotator(0, 0, Val)));
+        // * SpinSpeed * GetWorld()->GetDeltaSeconds()
     }
 }
 
@@ -334,7 +351,6 @@ void APlayerCharacter::HorizontalRotation(float Val)
     if (!isDead) {
         UE_LOG(LogTemp, Warning, TEXT("left is %d"), Val);
 
-        // AddControllerYawInput(Val);
         AddActorLocalRotation(FQuat(FRotator(0, Val, 0)));
 
         // add this later GetWorld()->GetDeltaSeconds()
@@ -372,6 +388,7 @@ void APlayerCharacter::Multi_HorizontalRotation_Implementation(float Val)
 {
     if (!IsLocallyControlled()) {
         AddActorLocalRotation(FQuat(FRotator(0, Val, 0)));
+        // * MouseSensitivity * GetWorld()->GetDeltaSeconds()
     }
 }
 
