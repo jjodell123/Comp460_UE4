@@ -12,6 +12,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
+
 // Sets default values
 APlayerCharacter::APlayerCharacter()
 {
@@ -27,6 +28,13 @@ APlayerCharacter::APlayerCharacter()
     ////    FP_MuzzleLocation->SetupAttachment(FP_Gun);
     //    FP_MuzzleLocation->SetRelativeLocation(FVector(42.0f, 40.0f, 40.0f));
 
+    //Load sound cue object
+    static ConstructorHelpers::FObjectFinder<USoundCue> FireSoundObject(TEXT("SoundCue'/Game/Audio/ShootingCue.ShootingCue'"));
+    if (FireSoundObject.Succeeded()){
+        FireSoundCue = FireSoundObject.Object;
+        FireSoundAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("FireSoundAudioComponent"));
+        
+    }
 }
 
 // Called when the game starts or when spawned
@@ -45,7 +53,9 @@ void APlayerCharacter::BeginPlay()
 //	}
 
     Camera = FindComponentByClass<UCameraComponent>();
-
+    if (FireSoundAudioComponent && FireSoundCue){
+        FireSoundAudioComponent->SetSound(FireSoundCue);
+    }
 
 }
 
@@ -134,6 +144,7 @@ bool APlayerCharacter::Multi_OnFire_Validate(FVector Location, FRotator Rotation
 
 void APlayerCharacter::Multi_OnFire_Implementation(FVector Location, FRotator Rotation)
 {
+    UE_LOG(LogTemp, Warning, TEXT("]anything"));
     if (!IsLocallyControlled()) {
         FActorSpawnParameters SpawnParams;
         SpawnParams.Owner = this;
@@ -145,6 +156,10 @@ void APlayerCharacter::Multi_OnFire_Implementation(FVector Location, FRotator Ro
             FVector LaunchDirection = Rotation.Vector();
             Projectile->FireInDirection(LaunchDirection);
         }
+    }
+
+    if (FireSoundAudioComponent && FireSoundCue) {
+        FireSoundAudioComponent->Play(0.f);
     }
 }
 

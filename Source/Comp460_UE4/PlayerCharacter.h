@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "Camera/CameraComponent.h"
 #include "MyProjectile.h"
+#include "Sound/SoundCue.h"
+#include "Components/AudioComponent.h"
 #include "PlayerCharacter.generated.h"
 
 class UCameraComponent;
@@ -42,8 +44,8 @@ public:
 
 
     /** Sound to play each time we fire */
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-    USoundBase* FireSound;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Audio, meta = (AllowPrivateAccess = "true"))
+        class USoundCue* FireSoundCue;
 
     /** AnimMontage to play each time we fire */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
@@ -72,6 +74,8 @@ public:
     float SpinSpeed = 10.0f;
 
 
+
+
     //Function handling firing projectiles
     UFUNCTION()
         void OnFire();
@@ -93,6 +97,9 @@ public:
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 private:
+
+    //Audio Component
+    UAudioComponent* FireSoundAudioComponent;
     // Handles forward/backward movement input
     UFUNCTION()
     void MoveForward(float Val);
