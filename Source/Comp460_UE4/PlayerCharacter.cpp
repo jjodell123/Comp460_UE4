@@ -29,10 +29,17 @@ APlayerCharacter::APlayerCharacter()
     //    FP_MuzzleLocation->SetRelativeLocation(FVector(42.0f, 40.0f, 40.0f));
 
     //Load sound cue object
-    static ConstructorHelpers::FObjectFinder<USoundCue> FireSoundObject(TEXT("SoundCue'/Game/Audio/ShootingCue.ShootingCue'"));
+    static ConstructorHelpers::FObjectFinder<USoundCue> FireSoundObject(TEXT("SoundCue'/Game/Audio/LaserCue.LaserCue'"));
     if (FireSoundObject.Succeeded()){
         FireSoundCue = FireSoundObject.Object;
         FireSoundAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("FireSoundAudioComponent"));
+        
+    }
+
+    static ConstructorHelpers::FObjectFinder<USoundCue> JetPackSoundObject(TEXT("SoundCue'/Game/Audio/JetPackCue.JetPackCue'"));
+    if (JetPackSoundObject.Succeeded()){
+        JetPackSoundCue = JetPackSoundObject.Object;
+        JetPackSoundAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("JetPackSoundAudioComponent"));
         
     }
 }
@@ -55,6 +62,10 @@ void APlayerCharacter::BeginPlay()
     Camera = FindComponentByClass<UCameraComponent>();
     if (FireSoundAudioComponent && FireSoundCue){
         FireSoundAudioComponent->SetSound(FireSoundCue);
+    }
+
+    if (JetPackSoundAudioComponent && JetPackSoundCue){
+        JetPackSoundAudioComponent->SetSound(JetPackSoundCue);
     }
 
 }
@@ -171,6 +182,10 @@ void APlayerCharacter::MoveForward(float Val)
         FVector Direction = GetActorForwardVector();
         FVector Position = GetActorLocation();
 
+        if (JetPackSoundAudioComponent && JetPackSoundCue) {
+            JetPackSoundAudioComponent->Play(0.f);
+        }
+
         //SetActorLocation(Position + Direction * Val * ForwardSpeed, true);
         AddMovementInput(Direction, Val);
 
@@ -223,6 +238,9 @@ void APlayerCharacter::Strafe(float Val)
         const FVector Direction = GetActorRightVector();
         FVector Position = GetActorLocation();
 
+        if (JetPackSoundAudioComponent && JetPackSoundCue) {
+            JetPackSoundAudioComponent->Play(0.f);
+        }
         AddMovementInput(Direction, Val);
         //SetActorLocation(Position + Direction * Val * StrafeSpeed, true);
 
@@ -264,6 +282,7 @@ void APlayerCharacter::Multi_Strafe_Implementation(float Val)
         AddMovementInput(Direction, Val);
         //SetActorLocation(Position + Direction * Val * StrafeSpeed, true);
         // * Val * StrafeSpeed * GetWorld()->GetDeltaSeconds()
+
     }
 }
 
@@ -272,6 +291,10 @@ void APlayerCharacter::Ascend(float Val)
     if (!isDead) {
         FVector Position = GetActorLocation();
         FVector Direction = GetActorUpVector();
+
+        if (JetPackSoundAudioComponent && JetPackSoundCue) {
+            JetPackSoundAudioComponent->Play(0.f);
+        }
 
         AddMovementInput(Direction, Val);
         //SetActorLocation(Position + Direction * Val * AscendSpeed, true);
@@ -314,6 +337,7 @@ void APlayerCharacter::Multi_Ascend_Implementation(float Val)
         AddMovementInput(Direction, Val);
         //SetActorLocation(Position + Direction * Val * AscendSpeed, true);
         //*Val* AscendSpeed* GetWorld()->GetDeltaSeconds()
+
     }
 }
 
@@ -323,7 +347,9 @@ void APlayerCharacter::Spin(float Val)
     if (!isDead) {
         AddActorLocalRotation(FQuat(FRotator(0, 0, Val)));
         // * SpinSpeed * GetWorld()->GetDeltaSeconds()
-
+        if (JetPackSoundAudioComponent && JetPackSoundCue) {
+            JetPackSoundAudioComponent->Play(0.f);
+        }
         if (!HasAuthority())
         {
             //On the Client
@@ -358,6 +384,7 @@ void APlayerCharacter::Multi_Spin_Implementation(float Val)
     if (!IsLocallyControlled()) {
         AddActorLocalRotation(FQuat(FRotator(0, 0, Val)));
         // * SpinSpeed * GetWorld()->GetDeltaSeconds()
+
     }
 }
 
@@ -367,7 +394,9 @@ void APlayerCharacter::HorizontalRotation(float Val)
         UE_LOG(LogTemp, Warning, TEXT("left is %d"), Val);
 
         AddActorLocalRotation(FQuat(FRotator(0, Val, 0)));
-
+        if (JetPackSoundAudioComponent && JetPackSoundCue) {
+            JetPackSoundAudioComponent->Play(0.f);
+        }
         // add this later GetWorld()->GetDeltaSeconds()
 
         if (!HasAuthority())
@@ -404,7 +433,10 @@ void APlayerCharacter::Multi_HorizontalRotation_Implementation(float Val)
     if (!IsLocallyControlled()) {
         AddActorLocalRotation(FQuat(FRotator(0, Val, 0)));
         // * MouseSensitivity * GetWorld()->GetDeltaSeconds()
+
     }
+
+    
 }
 
 
@@ -413,6 +445,9 @@ void APlayerCharacter::VerticalRotation(float Val)
     if (!isDead) {
         Val *= -1;
         AddActorLocalRotation(FQuat(FRotator(Val, 0, 0)));
+        if (JetPackSoundAudioComponent && JetPackSoundCue) {
+            JetPackSoundAudioComponent->Play(0.f);
+        }
 
         if (!HasAuthority())
         {
@@ -447,6 +482,7 @@ void APlayerCharacter::Multi_VerticalRotation_Implementation(float Val)
 {
     if (!IsLocallyControlled()) {
         AddActorLocalRotation(FQuat(FRotator(Val, 0, 0)));
+
     }
 }
 

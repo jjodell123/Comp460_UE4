@@ -47,6 +47,10 @@ public:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Audio, meta = (AllowPrivateAccess = "true"))
         class USoundCue* FireSoundCue;
 
+    /** Sound to play each time we fire */
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Audio, meta = (AllowPrivateAccess = "true"))
+        class USoundCue* JetPackSoundCue;
+
     /** AnimMontage to play each time we fire */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
     UAnimMontage* FireAnimation;
@@ -100,6 +104,8 @@ private:
 
     //Audio Component
     UAudioComponent* FireSoundAudioComponent;
+    UAudioComponent* JetPackSoundAudioComponent;
+
     // Handles forward/backward movement input
     UFUNCTION()
     void MoveForward(float Val);
