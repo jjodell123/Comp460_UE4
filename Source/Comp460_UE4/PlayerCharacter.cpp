@@ -12,6 +12,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
+
 // Sets default values
 APlayerCharacter::APlayerCharacter()
 {
@@ -27,6 +28,20 @@ APlayerCharacter::APlayerCharacter()
     ////    FP_MuzzleLocation->SetupAttachment(FP_Gun);
     //    FP_MuzzleLocation->SetRelativeLocation(FVector(42.0f, 40.0f, 40.0f));
 
+    //Load sound cue object
+    static ConstructorHelpers::FObjectFinder<USoundCue> FireSoundObject(TEXT("SoundCue'/Game/Audio/LaserCue.LaserCue'"));
+    if (FireSoundObject.Succeeded()) {
+        FireSoundCue = FireSoundObject.Object;
+        FireSoundAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("FireSoundAudioComponent"));
+
+    }
+
+    static ConstructorHelpers::FObjectFinder<USoundCue> JetPackSoundObject(TEXT("SoundCue'/Game/Audio/JetPackCue.JetPackCue'"));
+    if (JetPackSoundObject.Succeeded()) {
+        JetPackSoundCue = JetPackSoundObject.Object;
+        JetPackSoundAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("JetPackSoundAudioComponent"));
+
+    }
 }
 
 // Called when the game starts or when spawned
@@ -45,7 +60,13 @@ void APlayerCharacter::BeginPlay()
 //	}
 
     Camera = FindComponentByClass<UCameraComponent>();
+    if (FireSoundAudioComponent && FireSoundCue) {
+        FireSoundAudioComponent->SetSound(FireSoundCue);
+    }
 
+    if (JetPackSoundAudioComponent && JetPackSoundCue) {
+        JetPackSoundAudioComponent->SetSound(JetPackSoundCue);
+    }
 
 }
 
@@ -134,6 +155,7 @@ bool APlayerCharacter::Multi_OnFire_Validate(FVector Location, FRotator Rotation
 
 void APlayerCharacter::Multi_OnFire_Implementation(FVector Location, FRotator Rotation)
 {
+    UE_LOG(LogTemp, Warning, TEXT("]anything"));
     if (!IsLocallyControlled()) {
         FActorSpawnParameters SpawnParams;
         SpawnParams.Owner = this;
@@ -146,6 +168,10 @@ void APlayerCharacter::Multi_OnFire_Implementation(FVector Location, FRotator Ro
             Projectile->FireInDirection(LaunchDirection);
         }
     }
+
+    if (FireSoundAudioComponent && FireSoundCue) {
+        FireSoundAudioComponent->Play(0.f);
+    }
 }
 
 // Player moves forwards or backwards
@@ -156,46 +182,54 @@ void APlayerCharacter::MoveForward(float Val)
         FVector Direction = GetActorForwardVector();
         FVector Position = GetActorLocation();
 
+        if (JetPackSoundAudioComponent && JetPackSoundCue) {
+            JetPackSoundAudioComponent->Play(0.f);
+        }
+
         //SetActorLocation(Position + Direction * Val * ForwardSpeed, true);
         AddMovementInput(Direction, Val);
+
+        FVector Pos = GetActorLocation();
+        FRotator Rot = GetActorRotation();
 
         if (!HasAuthority())
         {
             //On the Client
-            Server_MoveForward(Val);
+            Server_MoveForward(Pos, Rot);
         }
         else
         {
             // Called from the server
-            Multi_MoveForward(Val);
+            Multi_MoveForward(Pos, Rot);
         }
     }
 
 }
 
-bool APlayerCharacter::Server_MoveForward_Validate(float Val)
+bool APlayerCharacter::Server_MoveForward_Validate(FVector loc, FRotator rot)
 {
     return true;
 }
 
-void APlayerCharacter::Server_MoveForward_Implementation(float Val)
+void APlayerCharacter::Server_MoveForward_Implementation(FVector loc, FRotator rot)
 {
-    Multi_MoveForward(Val);
+    Multi_MoveForward(loc, rot);
 }
 
-bool APlayerCharacter::Multi_MoveForward_Validate(float Val)
+bool APlayerCharacter::Multi_MoveForward_Validate(FVector loc, FRotator rot)
 {
     return true;
 }
 
-void APlayerCharacter::Multi_MoveForward_Implementation(float Val)
+void APlayerCharacter::Multi_MoveForward_Implementation(FVector loc, FRotator rot)
 {
     if (!IsLocallyControlled()) {
-        FVector Direction = GetActorForwardVector();
-        FVector Position = GetActorLocation();
+        //FVector Direction = GetActorForwardVector();
+        //FVector Position = GetActorLocation();
 
-        AddMovementInput(Direction, Val);
-        //SetActorLocation(Position + Direction * Val * ForwardSpeed, true);
+        
+        SetActorLocation(loc);
+        SetActorRotation(rot);
         // * Val * ForwardSpeed * GetWorld()->GetDeltaSeconds()
     }
 }
@@ -208,47 +242,56 @@ void APlayerCharacter::Strafe(float Val)
         const FVector Direction = GetActorRightVector();
         FVector Position = GetActorLocation();
 
+        if (JetPackSoundAudioComponent && JetPackSoundCue) {
+            JetPackSoundAudioComponent->Play(0.f);
+        }
         AddMovementInput(Direction, Val);
         //SetActorLocation(Position + Direction * Val * StrafeSpeed, true);
+
+        FVector loc = GetActorLocation();
+        FRotator rot = GetActorRotation();
 
         if (!HasAuthority())
         {
             //On the Client
-            Server_Strafe(Val);
+            Server_Strafe(loc, rot);
         }
         else
         {
             // Called from the server
-            Multi_Strafe(Val);
+            Multi_Strafe(loc, rot);
         }
     }
 
 }
 
-bool APlayerCharacter::Server_Strafe_Validate(float Val)
+bool APlayerCharacter::Server_Strafe_Validate(FVector loc, FRotator rot)
 {
     return true;
 }
 
-void APlayerCharacter::Server_Strafe_Implementation(float Val)
+void APlayerCharacter::Server_Strafe_Implementation(FVector loc, FRotator rot)
 {
-    Multi_Strafe(Val);
+    Multi_Strafe(loc, rot);
 }
 
-bool APlayerCharacter::Multi_Strafe_Validate(float Val)
+bool APlayerCharacter::Multi_Strafe_Validate(FVector loc, FRotator rot)
 {
     return true;
 }
 
-void APlayerCharacter::Multi_Strafe_Implementation(float Val)
+void APlayerCharacter::Multi_Strafe_Implementation(FVector loc, FRotator rot)
 {
     if (!IsLocallyControlled()) {
         const FVector Direction = GetActorRightVector();
         FVector Position = GetActorLocation();
-        
-        AddMovementInput(Direction, Val);
+
+        //AddMovementInput(Direction, Val);
+        SetActorLocation(loc);
+        SetActorRotation(rot);
         //SetActorLocation(Position + Direction * Val * StrafeSpeed, true);
         // * Val * StrafeSpeed * GetWorld()->GetDeltaSeconds()
+
     }
 }
 
@@ -258,47 +301,58 @@ void APlayerCharacter::Ascend(float Val)
         FVector Position = GetActorLocation();
         FVector Direction = GetActorUpVector();
 
+        if (JetPackSoundAudioComponent && JetPackSoundCue) {
+            JetPackSoundAudioComponent->Play(0.f);
+        }
+
         AddMovementInput(Direction, Val);
         //SetActorLocation(Position + Direction * Val * AscendSpeed, true);
+
+        FVector loc = GetActorLocation();
+        FRotator rot = GetActorRotation();
 
         if (!HasAuthority())
         {
             //On the Client
-            Server_Ascend(Val);
+            Server_Ascend(loc, rot);
         }
         else
         {
             // Called from the server
-            Multi_Ascend(Val);
+            Multi_Ascend(loc, rot);
         }
     }
 
 }
 
-bool APlayerCharacter::Server_Ascend_Validate(float Val)
+bool APlayerCharacter::Server_Ascend_Validate(FVector loc, FRotator rot)
 {
     return true;
 }
 
-void APlayerCharacter::Server_Ascend_Implementation(float Val)
+void APlayerCharacter::Server_Ascend_Implementation(FVector loc, FRotator rot)
 {
-    Multi_Ascend(Val);
+    Multi_Ascend(loc, rot);
 }
 
-bool APlayerCharacter::Multi_Ascend_Validate(float Val)
+bool APlayerCharacter::Multi_Ascend_Validate(FVector loc, FRotator rot)
 {
     return true;
 }
 
-void APlayerCharacter::Multi_Ascend_Implementation(float Val)
+void APlayerCharacter::Multi_Ascend_Implementation(FVector loc, FRotator rot)
 {
     if (!IsLocallyControlled()) {
-        FVector Position = GetActorLocation();
-        FVector Direction = GetActorUpVector();
+ /*       FVector Position = GetActorLocation();
+        FVector Direction = GetActorUpVector();*/
 
-        AddMovementInput(Direction, Val);
+        SetActorLocation(loc);
+        SetActorRotation(rot);
+
+        //AddMovementInput(Direction, Val);
         //SetActorLocation(Position + Direction * Val * AscendSpeed, true);
         //*Val* AscendSpeed* GetWorld()->GetDeltaSeconds()
+
     }
 }
 
@@ -308,7 +362,9 @@ void APlayerCharacter::Spin(float Val)
     if (!isDead) {
         AddActorLocalRotation(FQuat(FRotator(0, 0, Val)));
         // * SpinSpeed * GetWorld()->GetDeltaSeconds()
-
+        if (JetPackSoundAudioComponent && JetPackSoundCue) {
+            JetPackSoundAudioComponent->Play(0.f);
+        }
         if (!HasAuthority())
         {
             //On the Client
@@ -343,6 +399,7 @@ void APlayerCharacter::Multi_Spin_Implementation(float Val)
     if (!IsLocallyControlled()) {
         AddActorLocalRotation(FQuat(FRotator(0, 0, Val)));
         // * SpinSpeed * GetWorld()->GetDeltaSeconds()
+
     }
 }
 
@@ -352,7 +409,9 @@ void APlayerCharacter::HorizontalRotation(float Val)
         UE_LOG(LogTemp, Warning, TEXT("left is %d"), Val);
 
         AddActorLocalRotation(FQuat(FRotator(0, Val, 0)));
-
+        if (JetPackSoundAudioComponent && JetPackSoundCue) {
+            JetPackSoundAudioComponent->Play(0.f);
+        }
         // add this later GetWorld()->GetDeltaSeconds()
 
         if (!HasAuthority())
@@ -389,7 +448,10 @@ void APlayerCharacter::Multi_HorizontalRotation_Implementation(float Val)
     if (!IsLocallyControlled()) {
         AddActorLocalRotation(FQuat(FRotator(0, Val, 0)));
         // * MouseSensitivity * GetWorld()->GetDeltaSeconds()
+
     }
+
+
 }
 
 
@@ -398,6 +460,9 @@ void APlayerCharacter::VerticalRotation(float Val)
     if (!isDead) {
         Val *= -1;
         AddActorLocalRotation(FQuat(FRotator(Val, 0, 0)));
+        if (JetPackSoundAudioComponent && JetPackSoundCue) {
+            JetPackSoundAudioComponent->Play(0.f);
+        }
 
         if (!HasAuthority())
         {
@@ -432,6 +497,6 @@ void APlayerCharacter::Multi_VerticalRotation_Implementation(float Val)
 {
     if (!IsLocallyControlled()) {
         AddActorLocalRotation(FQuat(FRotator(Val, 0, 0)));
+
     }
 }
-
