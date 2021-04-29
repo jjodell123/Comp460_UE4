@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "Camera/CameraComponent.h"
 #include "MyProjectile.h"
+#include "Sound/SoundCue.h"
+#include "Components/AudioComponent.h"
 #include "PlayerCharacter.generated.h"
 
 class UCameraComponent;
@@ -38,38 +40,44 @@ public:
 
     /** Gun muzzle's offset from the characters location */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-    FVector MuzzleOffset;
+        FVector MuzzleOffset;
 
 
     /** Sound to play each time we fire */
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-    USoundBase* FireSound;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Audio, meta = (AllowPrivateAccess = "true"))
+        class USoundCue* FireSoundCue;
+
+    /** Sound to play each time we fire */
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Audio, meta = (AllowPrivateAccess = "true"))
+        class USoundCue* JetPackSoundCue;
 
     /** AnimMontage to play each time we fire */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-    UAnimMontage* FireAnimation;
+        UAnimMontage* FireAnimation;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PlayerSettings)
-    bool isDead = false;
+        bool isDead = false;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PlayerSettings)
-    int Damage = 25;
+        int Damage = 25;
 
     // Movement speeds
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PlayerSettings)
-    float MouseSensitivity = 50.0f;
+        float MouseSensitivity = 50.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PlayerSettings)
-    float AscendSpeed = 10.0f;
-    
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PlayerSettings)
-    float StrafeSpeed = 10.0f;
-    
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PlayerSettings)
-    float ForwardSpeed = 10.0f;
+        float AscendSpeed = 10.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PlayerSettings)
-    float SpinSpeed = 10.0f;
+        float StrafeSpeed = 10.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PlayerSettings)
+        float ForwardSpeed = 10.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PlayerSettings)
+        float SpinSpeed = 10.0f;
+
+
 
 
     //Function handling firing projectiles
@@ -77,12 +85,12 @@ public:
         void OnFire();
 
     UFUNCTION(Server, Reliable, WithValidation)
-    void Server_OnFire(FVector Location, FRotator Rotation);
+        void Server_OnFire(FVector Location, FRotator Rotation);
     bool Server_OnFire_Validate(FVector Location, FRotator Rotation);
     void Server_OnFire_Implementation(FVector Location, FRotator Rotation);
 
     UFUNCTION(NetMulticast, Reliable, WithValidation)
-    void Multi_OnFire(FVector Location, FRotator Rotation);
+        void Multi_OnFire(FVector Location, FRotator Rotation);
     bool Multi_OnFire_Validate(FVector Location, FRotator Rotation);
     void Multi_OnFire_Implementation(FVector Location, FRotator Rotation);
 
@@ -93,85 +101,90 @@ public:
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 private:
+
+    //Audio Component
+    UAudioComponent* FireSoundAudioComponent;
+    UAudioComponent* JetPackSoundAudioComponent;
+
     // Handles forward/backward movement input
     UFUNCTION()
-    void MoveForward(float Val);
+        void MoveForward(float Val);
 
     UFUNCTION(Server, Reliable, WithValidation)
-    void Server_MoveForward(float Val);
-    bool Server_MoveForward_Validate(float Val);
-    void Server_MoveForward_Implementation(float Val);
+        void Server_MoveForward(FVector loc, FRotator rot);
+    bool Server_MoveForward_Validate(FVector loc, FRotator rot);
+    void Server_MoveForward_Implementation(FVector loc, FRotator rot);
 
     UFUNCTION(NetMulticast, Reliable, WithValidation)
-    void Multi_MoveForward(float Val);
-    bool Multi_MoveForward_Validate(float Val);
-    void Multi_MoveForward_Implementation(float Val);
+        void Multi_MoveForward(FVector loc, FRotator rot);
+    bool Multi_MoveForward_Validate(FVector loc, FRotator rot);
+    void Multi_MoveForward_Implementation(FVector loc, FRotator rot);
 
     UFUNCTION()
-    void Strafe(float Val);
+        void Strafe(float Val);
 
     UFUNCTION(Server, Reliable, WithValidation)
-    void Server_Strafe(float Val);
-    bool Server_Strafe_Validate(float Val);
-    void Server_Strafe_Implementation(float Val);
+        void Server_Strafe(FVector loc, FRotator rot);
+    bool Server_Strafe_Validate(FVector loc, FRotator rot);
+    void Server_Strafe_Implementation(FVector loc, FRotator rot);
 
     UFUNCTION(NetMulticast, Reliable, WithValidation)
-    void Multi_Strafe(float Val);
-    bool Multi_Strafe_Validate(float Val);
-    void Multi_Strafe_Implementation(float Val);
+        void Multi_Strafe(FVector loc, FRotator rot);
+    bool Multi_Strafe_Validate(FVector loc, FRotator rot);
+    void Multi_Strafe_Implementation(FVector loc, FRotator rot);
 
     UFUNCTION()
-    void Ascend(float Val);
+        void Ascend(float Val);
 
     UFUNCTION(Server, Reliable, WithValidation)
-    void Server_Ascend(float Val);
-    bool Server_Ascend_Validate(float Val);
-    void Server_Ascend_Implementation(float Val);
+        void Server_Ascend(FVector loc, FRotator rot);
+    bool Server_Ascend_Validate(FVector loc, FRotator rot);
+    void Server_Ascend_Implementation(FVector loc, FRotator rot);
 
     UFUNCTION(NetMulticast, Reliable, WithValidation)
-    void Multi_Ascend(float Val);
-    bool Multi_Ascend_Validate(float Val);
-    void Multi_Ascend_Implementation(float Val);
+        void Multi_Ascend(FVector loc, FRotator rot);
+    bool Multi_Ascend_Validate(FVector loc, FRotator rot);
+    void Multi_Ascend_Implementation(FVector loc, FRotator rot);
 
     UFUNCTION()
-    void Spin(float Val);
+        void Spin(float Val);
 
     UFUNCTION(Server, Reliable, WithValidation)
-    void Server_Spin(float Val);
+        void Server_Spin(float Val);
     bool Server_Spin_Validate(float Val);
     void Server_Spin_Implementation(float Val);
 
     UFUNCTION(NetMulticast, Reliable, WithValidation)
-    void Multi_Spin(float Val);
+        void Multi_Spin(float Val);
     bool Multi_Spin_Validate(float Val);
     void Multi_Spin_Implementation(float Val);
 
     UFUNCTION()
-    void HorizontalRotation(float Val);
+        void HorizontalRotation(float Val);
 
     UFUNCTION(Server, Reliable, WithValidation)
-    void Server_HorizontalRotation(float Val);
+        void Server_HorizontalRotation(float Val);
     bool Server_HorizontalRotation_Validate(float Val);
     void Server_HorizontalRotation_Implementation(float Val);
 
     UFUNCTION(NetMulticast, Reliable, WithValidation)
-    void Multi_HorizontalRotation(float Val);
+        void Multi_HorizontalRotation(float Val);
     bool Multi_HorizontalRotation_Validate(float Val);
     void Multi_HorizontalRotation_Implementation(float Val);
 
     UFUNCTION()
-    void VerticalRotation(float Val);
+        void VerticalRotation(float Val);
 
     UFUNCTION(Server, Reliable, WithValidation)
-    void Server_VerticalRotation(float Val);
+        void Server_VerticalRotation(float Val);
     bool Server_VerticalRotation_Validate(float Val);
     void Server_VerticalRotation_Implementation(float Val);
 
     UFUNCTION(NetMulticast, Reliable, WithValidation)
-    void Multi_VerticalRotation(float Val);
+        void Multi_VerticalRotation(float Val);
     bool Multi_VerticalRotation_Validate(float Val);
     void Multi_VerticalRotation_Implementation(float Val);
 
     UPROPERTY()
-    UCameraComponent* Camera;
+        UCameraComponent* Camera;
 };
