@@ -31,17 +31,11 @@ ADonNavigationManager* UDonNavigationHelper::DonNavigationManager(UObject* World
 
 ADonNavigationManager* UDonNavigationHelper::DonNavigationManagerForActor(const AActor *Actor)
 {
-	// UE_LOG(DoNNavigationLog, Log, TEXT("Other pointer val is %p with location %s"), (void *)Actor, *(Actor->GetActorLocation().ToString()));
-
 
 	if (!Actor)
 		return nullptr;
 
 	TActorIterator<ADonNavigationManager> It(Actor->GetWorld(), ADonNavigationManager::StaticClass());
-
-
-	// UE_LOG(DoNNavigationLog, Log, TEXT("%s"), *(Actor->GetWorld()->GetMapName()));
-	// UE_LOG(DoNNavigationLog, Log, TEXT("%p %s"), &It, It ? *FString("true") : *FString("false"));
 
 	for (; It; ++It) {
 		const ADonNavigationManager *Mgr = *It;
