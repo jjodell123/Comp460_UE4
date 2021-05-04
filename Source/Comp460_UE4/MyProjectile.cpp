@@ -83,6 +83,10 @@ void AMyProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
     }
 }
 
+void AMyProjectile::HitPlayer(AActor* HitActor) {
+    UE_LOG(LogTemp, Warning, TEXT("YOu hit a player"));
+}
+
 // Function that initializes the projectile's velocity in the shoot direction.
 void AMyProjectile::FireInDirection(const FVector& ShootDirection)
 {

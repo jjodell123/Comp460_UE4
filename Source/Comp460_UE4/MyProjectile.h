@@ -47,9 +47,14 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile Variables")
         int damage;
 
+    UFUNCTION(BlueprintCallable)
+        void HitPlayer(AActor* HitActor);
+
     /** called when projectile hits something */
     UFUNCTION()
         void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
+
+    
 
     // Function that initializes the projectile's velocity in the shoot direction.
     void FireInDirection(const FVector& ShootDirection);
